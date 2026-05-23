@@ -1,0 +1,56 @@
+# Project Configuration
+
+# Paths
+paths:
+  raw_data: "data/raw"
+  processed_data: "data/processed"
+  sql_outputs: "data/sql_outputs"
+  final_data: "data/final"
+  models: "models/saved_models"
+  figures: "outputs/figures"
+  reports: "outputs/reports"
+
+# Database
+database:
+  type: "sqlite"
+  name: "ecommerce_returns.db"
+  path: "data/ecommerce_returns.db"
+
+# Model Parameters
+model:
+  test_size: 0.2
+  random_state: 42
+  cv_folds: 5
+
+# Business Rules
+business:
+  # Category-wise return propensity (%)
+  category_return_rates:
+    fashion: 30
+    electronics: 15
+    home: 10
+    books: 5
+    health_beauty: 12
+    sports: 18
+
+  # Review score to return probability mapping
+  review_return_mapping:
+    1: 0.8  # 1-star review → 80% return probability
+    2: 0.6
+    3: 0.3
+    4: 0.1
+    5: 0.05
+
+  # Delivery delay impact (days late → return probability increase)
+  delivery_delay_impact: 0.05  # 5% increase per day late
+
+  # Risk thresholds
+  risk_thresholds:
+    low: 0.3
+    medium: 0.6
+    high: 0.8
+
+# Feature Engineering
+features:
+  lookback_days: [30, 90, 180]  # For temporal features
+  min_orders_for_behavior: 2  # Minimum orders to calculate behavior metrics

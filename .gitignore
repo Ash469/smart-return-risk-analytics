@@ -8,16 +8,6 @@ env/
 venv/
 *.egg-info/
 
-# Jupyter Notebook
-.ipynb_checkpoints
-*.ipynb_checkpoints
-
-
-# Models
-models/saved_models/*.pkl
-models/saved_models/*.joblib
-models/saved_models/*.h5
-
 # IDE
 .vscode/
 .idea/
@@ -28,16 +18,6 @@ models/saved_models/*.h5
 # OS
 .DS_Store
 Thumbs.db
-
-# Outputs
-outputs/figures/*.png
-outputs/figures/*.jpg
-outputs/reports/*.html
-outputs/sql_profiling/*.csv
-
-# Config with sensitive info
-config/credentials.yaml
-config/secrets.yaml
 
 # Logs
 *.log

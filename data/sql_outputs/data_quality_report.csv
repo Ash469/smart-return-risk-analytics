@@ -1,0 +1,16 @@
+check_name,total_rows,non_null_order_id,non_null_customer_id,non_null_purchase_date,null_order_id,null_customer_id,total_orders,unique_orders,duplicates,orders_with_reviews,orders_without_reviews,pct_without_reviews,order_status,count,percentage,total_products,products_with_category,products_without_category,earliest_order,latest_order,days_span,metric,total_customers,avg_orders_per_customer,total_items,zero_or_negative_price,min_price,max_price,avg_price
+orders_null_check,99441.0,99441.0,99441.0,99441.0,0.0,0.0,,,,,,,,,,,,,,,,,,,,,,,
+duplicate_orders,,,,,,,99441.0,99441.0,0.0,,,,,,,,,,,,,,,,,,,,
+orders_without_reviews,,,,,,,99441.0,,,98673.0,768.0,0.77,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,delivered,96478.0,97.02,,,,,,,,,,,,,,
+,,,,,,,,,,,,,shipped,1107.0,1.11,,,,,,,,,,,,,,
+,,,,,,,,,,,,,canceled,625.0,0.63,,,,,,,,,,,,,,
+,,,,,,,,,,,,,unavailable,609.0,0.61,,,,,,,,,,,,,,
+,,,,,,,,,,,,,invoiced,314.0,0.32,,,,,,,,,,,,,,
+,,,,,,,,,,,,,processing,301.0,0.3,,,,,,,,,,,,,,
+,,,,,,,,,,,,,created,5.0,0.01,,,,,,,,,,,,,,
+,,,,,,,,,,,,,approved,2.0,0.0,,,,,,,,,,,,,,
+products_without_category,,,,,,,,,,,,,,,,32951.0,32341.0,610.0,,,,,,,,,,,
+date_range,,,,,,,,,,,,,,,,,,,2016-09-04 21:15:19,2018-10-17 17:30:18,772.8437384259887,,,,,,,,
+,,,,,,,99441.0,,,,,,,,,,,,,,,customer_order_frequency,99441.0,1.0,,,,,
+price_validation,,,,,,,,,,,,,,,,,,,,,,,,,112650.0,0.0,0.85,6735.0,120.65

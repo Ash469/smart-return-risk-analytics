@@ -1,0 +1,53 @@
+smart-return-risk-analytics/
+│
+├── 📁 config/
+│   └── config.yaml                  # Project configurations
+│
+├── 📁 data/
+│   ├── raw/                         # Olist CSVs here
+│   ├── processed/                   # Cleaned data
+│   ├── sql_outputs/                 # SQL query results
+│   └── final/                       # ML-ready datasets
+│
+├── 📁 sql/                          #  SQL analytics layer
+│   ├── 01_setup_tables.sql        
+│   ├── 02_data_quality_checks.sql
+│   ├── 03_customer_features.sql
+│   ├── 04_product_features.sql
+│   ├── 05_behavioral_features.sql
+│   ├── 06_risk_scoring.sql
+│   └── 07_final_feature_table.sql
+│
+├── 📁 notebooks/                    # Jupyter analysis
+│   ├── 01_initial_data_exploration.ipynb
+│   ├── 02_sql_feature_analysis.ipynb
+│   ├── 03_return_simulation.ipynb
+│   ├── 04_feature_engineering.ipynb
+│   ├── 05_model_training.ipynb
+│   └── 06_evaluation_explainability.ipynb
+│
+├── 📁 src/                          # Python modules
+│   ├── db_setup.py                  # Database initialization
+│   ├── data_loader.py               # Load CSVs to SQLite
+│   ├── sql_executor.py              # Execute SQL scripts
+│   ├── feature_engineering.py       # Python features
+│   ├── model_training.py            # ML pipeline
+│   ├── inference.py                 # Prediction module
+│   └── utils.py                     # Helper functions
+│
+├── 📁 dashboard/                    # Streamlit app
+│   ├── app.py                       # Main dashboard
+│   ├── components/                  # UI components
+│   │   ├── risk_lookup.py
+│   │   ├── kpi_cards.py
+│   │   └── charts.py
+│   └── assets/                      # CSS, images
+│
+├── 📁 models/
+│   └── saved_models/                # Pickled models (.pkl)
+│
+├── 📁 outputs/
+    ├── figures/                     # Charts, plots
+    ├── reports/                     # Analysis reports
+    └── sql_profiling/               # SQL results
+

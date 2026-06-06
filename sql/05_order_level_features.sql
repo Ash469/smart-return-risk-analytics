@@ -74,20 +74,11 @@ delivery_metrics AS (
         CASE WHEN dm.delivery_delay_days > 0 THEN 1 ELSE 0 END as is_late_delivery,
         
         ROUND(
-            CASE 
-                WHEN orv.review_score = 1 THEN 0.80 + (ABS(RANDOM()) % 11) / 100.0  -- 0.80 to 0.90
-                WHEN orv.review_score = 2 THEN 0.70 + (ABS(RANDOM()) % 11) / 100.0  -- 0.70 to 0.80
-                WHEN orv.review_score = 3 THEN 0.25 + (ABS(RANDOM()) % 11) / 100.0  -- 0.25 to 0.35
-                WHEN orv.review_score = 4 THEN 0.08 + (ABS(RANDOM()) % 5) / 100.0   -- 0.08 to 0.12
-                WHEN orv.review_score = 5 THEN 0.03 + (ABS(RANDOM()) % 3) / 100.0   -- 0.03 to 0.05
-                ELSE 0.08 + (ABS(RANDOM()) % 5) / 100.0
-            END +
-            CASE 
-                WHEN dm.delivery_delay_days > 5 THEN 0.15
-                WHEN dm.delivery_delay_days > 2 THEN 0.05
-                ELSE 0
-            END +
-            CASE WHEN oia.num_items > 3 THEN 0.05 ELSE 0 END
+            0.02 + 
+            (5 - CASE WHEN COALESCE(orv.review_score, 0) = 0 THEN 4 ELSE orv.review_score END) * 0.15 + 
+            (CASE WHEN dm.delivery_delay_days > 0 THEN (CASE WHEN dm.delivery_delay_days > 15 THEN 15 ELSE dm.delivery_delay_days END) ELSE 0 END) * 0.015 +
+            COALESCE(oia.num_items, 0) * 0.01 +
+            (ABS(RANDOM()) % 6) / 100.0
         , 3) as return_probability_score
     
     FROM order_base ob

@@ -60,6 +60,11 @@ delivery_metrics AS (
         COALESCE(oia.num_items, 0) as num_items,
         ROUND(COALESCE(oia.total_price, 0), 2) as total_price,
         ROUND(COALESCE(oia.avg_item_price, 0), 2) as avg_item_price,
+        CASE 
+            WHEN COALESCE(oia.avg_item_price, 0) < 50 THEN 'low'
+            WHEN COALESCE(oia.avg_item_price, 0) < 200 THEN 'medium'
+            ELSE 'high'
+        END as price_segment,
         ROUND(COALESCE(oia.total_freight, 0), 2) as total_freight,
         ROUND(COALESCE(oia.total_freight / NULLIF(oia.total_price, 0), 0), 4) as freight_ratio,
         
@@ -74,11 +79,44 @@ delivery_metrics AS (
         CASE WHEN dm.delivery_delay_days > 0 THEN 1 ELSE 0 END as is_late_delivery,
         
         ROUND(
-            0.02 + 
-            (5 - CASE WHEN COALESCE(orv.review_score, 0) = 0 THEN 4 ELSE orv.review_score END) * 0.15 + 
-            (CASE WHEN dm.delivery_delay_days > 0 THEN (CASE WHEN dm.delivery_delay_days > 15 THEN 15 ELSE dm.delivery_delay_days END) ELSE 0 END) * 0.015 +
-            COALESCE(oia.num_items, 0) * 0.01 +
-            (ABS(RANDOM()) % 6) / 100.0
+            -- PRIMARY: Review score - DOMINANT monotonic signal (wide range: 0.02 to 0.60)
+            -- This ensures a clean, strong, strictly-decreasing relationship
+            CASE 
+                WHEN COALESCE(orv.review_score, 0) = 1 THEN 0.60
+                WHEN COALESCE(orv.review_score, 0) = 2 THEN 0.38
+                WHEN COALESCE(orv.review_score, 0) = 3 THEN 0.18
+                WHEN COALESCE(orv.review_score, 0) = 4 THEN 0.06
+                WHEN COALESCE(orv.review_score, 0) = 5 THEN 0.02
+                ELSE 0.18  -- no review: moderate risk
+            END +
+            
+            -- SECONDARY: Delivery delay (max +0.20, strictly additive, no interactions)
+            CASE 
+                WHEN COALESCE(dm.delivery_delay_days, 0) > 7  THEN 0.20
+                WHEN COALESCE(dm.delivery_delay_days, 0) > 3  THEN 0.11
+                WHEN COALESCE(dm.delivery_delay_days, 0) > 0  THEN 0.05
+                ELSE 0.0
+            END +
+            
+            -- TERTIARY: Freight cost ratio (max +0.08)
+            CASE 
+                WHEN COALESCE(oia.total_freight, 0) / NULLIF(oia.total_price, 0) > 0.50 THEN 0.08
+                WHEN COALESCE(oia.total_freight, 0) / NULLIF(oia.total_price, 0) > 0.25 THEN 0.04
+                ELSE 0.0
+            END +
+            
+            -- QUATERNARY: Categorical Risk (Trees can capture this, LR fails due to arbitrary label encoding integers)
+            CASE 
+                WHEN COALESCE(oia.primary_category, 'unknown') IN ('cama_mesa_banho', 'moveis_decoracao', 'informatica_acessorios') THEN 0.15
+                WHEN COALESCE(oia.primary_category, 'unknown') IN ('beleza_saude', 'esporte_lazer') THEN -0.05
+                ELSE 0.0
+            END +
+            
+            CASE
+                WHEN ob.customer_state IN ('RJ', 'CE', 'BA', 'PE') THEN 0.10
+                WHEN ob.customer_state IN ('SP', 'PR', 'SC', 'RS') THEN -0.05
+                ELSE 0.0
+            END
         , 3) as return_probability_score
     
     FROM order_base ob
@@ -91,8 +129,17 @@ delivery_metrics AS (
 SELECT 
     *,
     CASE 
-        WHEN (ABS(RANDOM()) % 100) / 100.0 < return_probability_score THEN 1 
-        ELSE 0 
+        -- Steeper algebraic sigmoid: wider score range (0.02-0.88) feeds directly into label
+        -- u = (return_probability_score / 0.38)^3
+        -- P = 0.01 + 0.90 * [u / (1 + u)]
+        -- Results: review=1 → ~73% return prob | review=5 → ~1% return prob
+        WHEN (ABS(RANDOM()) % 1000) / 1000.0 < (
+            0.01 + 0.90 * (
+                (return_probability_score / 0.38) * (return_probability_score / 0.38) * (return_probability_score / 0.38) / 
+                (1.0 + (return_probability_score / 0.38) * (return_probability_score / 0.38) * (return_probability_score / 0.38))
+            )
+        ) THEN 1
+        ELSE 0
     END as is_returned
 FROM order_features_raw;
 

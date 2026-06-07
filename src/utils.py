@@ -1,7 +1,5 @@
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
 import yaml
 import os
 
@@ -26,6 +24,8 @@ def print_df_info(df, name="DataFrame"):
     print("="*60 + "\n")
 
 def plot_missing_values(df, figsize=(10, 6), save_path=None):
+    import matplotlib.pyplot as plt
+    import seaborn as sns
     plt.figure(figsize=figsize)
     sns.heatmap(df.isnull(), cbar=False, yticklabels=False, cmap='viridis')
     plt.title('Missing Values Heatmap', fontsize=14, fontweight='bold')

@@ -22,7 +22,7 @@ with col1:
     agg1 = historical_df.groupby('review_score')['is_returned'].mean().reset_index()
     fig1 = px.bar(agg1, x='review_score', y='is_returned', labels={'is_returned': 'Return Rate', 'review_score': 'Review Score'})
     fig1.update_layout(yaxis_tickformat='.1%')
-    st.plotly_chart(fig1, use_container_width=True)
+    st.plotly_chart(fig1, width="stretch")
     
 with col2:
     st.subheader("Return Rate by Delivery Delay")
@@ -31,4 +31,4 @@ with col2:
     agg2 = historical_df.groupby('Delay Bin')['is_returned'].mean().reset_index()
     fig2 = px.line(agg2, x='Delay Bin', y='is_returned', markers=True, labels={'is_returned': 'Return Rate'})
     fig2.update_layout(yaxis_tickformat='.1%')
-    st.plotly_chart(fig2, use_container_width=True)
+    st.plotly_chart(fig2, width="stretch")

@@ -69,7 +69,7 @@ with col_results:
         }
     ))
     fig_gauge.update_layout(height=250, margin=dict(l=10, r=10, t=10, b=10))
-    st.plotly_chart(fig_gauge, use_container_width=True)
+    st.plotly_chart(fig_gauge, width="stretch")
     
     st.subheader("Model Explainer: Why did the AI choose this?")
     try:
@@ -91,7 +91,7 @@ with col_results:
                 color='SHAP Impact', color_continuous_scale=px.colors.diverging.RdYlGn_r
             )
             fig_shap.update_layout(height=300, margin=dict(l=10, r=10, t=30, b=10))
-            st.plotly_chart(fig_shap, use_container_width=True)
+            st.plotly_chart(fig_shap, width="stretch")
         else:
             st.info("SHAP Explainer is only available for Tree-based models (XGBoost, Random Forest, Decision Tree).")
     except Exception as e:
